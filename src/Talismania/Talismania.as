@@ -171,12 +171,12 @@ package Talismania
 					var filter:TalismanFilter;
 					if (pE.altKey)
 					{
-						filter = new TalismanFilter(TalismanFilter.myFilterInner, TalismanFilter.myFilterEdge, TalismanFilter.myFilterCorner, Math.random() * 7999998, 3);
+						filter = new TalismanFilter(TalismanFilter.myFilterInner, TalismanFilter.myFilterEdge, TalismanFilter.myFilterCorner, 3);
 						filterTalisman(filter);
 					}
 					else
 					{
-						filter = new TalismanFilter([TalismanFilter.SKILLS_ALL], [TalismanFilter.SKILLS_ALL], [TalismanFilter.SKILLS_ALL], Math.random() * 7999998);
+						filter = new TalismanFilter([TalismanFilter.SKILLS_ALL], [TalismanFilter.SKILLS_ALL], [TalismanFilter.SKILLS_ALL]);
 						filterTalisman(filter, true);
 					}
 				}

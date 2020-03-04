@@ -101,6 +101,10 @@ package Talismania
 			{
 				return null;
 			}
+			if (startSeed > 0)
+			{
+				startSeed = talismanBase.seed + 1;
+			}
 			var start:int = talismanSeedBase + startSeed;
 			var end:int = maxTalismanSeed;
 			var passTest:Boolean = true;
