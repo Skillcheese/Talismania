@@ -23,7 +23,9 @@ Release history: [Releases](https://github.com/Skillcheese/Talismania/releases)
 By default Talismania's hotkeys are:
 ```
 - in the talisman menu -
-alt + k - mega - upgrade a talisman fragment (costs 50,000 shadow cores)
+these commmands must be used on a r100 talisman fragment!
+alt + k - filter a talisman fragment (costs 50,000 shadow cores)
+k - get a random new r100 talisman fragment (costs 1,000 shadow cores)
 ```
 
 # Bug reports and feedback
