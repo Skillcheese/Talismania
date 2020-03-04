@@ -52,27 +52,29 @@ package Talismania
 		];
 		
 		public static var myFilterCorner:Array = [
-		DAMAGE_TO_SWARMLINGS,
-		DAMAGE_TO_REAVERS,
-		DAMAGE_TO_GIANTS,
 		XP_GAINED,
-		WHITEOUT_XPBOOST_PCT
+		WHITEOUT_XPBOOST_PCT,
+		WHITEOUT_MANALEECHBOOST_PCT,
+		FREEZE_DURATION,
+		WHITEOUT_DURATION
 		];
 		
 		public static var myFilterEdge:Array = [
+		XP_GAINED,
+		DAMAGE_TO_FLYING,
+		WIZLEVEL_TO_XP_AND_MANA,
 		DAMAGE_TO_SWARMLINGS,
 		DAMAGE_TO_REAVERS,
-		DAMAGE_TO_GIANTS,
-		XP_GAINED,
-		MAX_WHITEOUT_CHARGE
+		DAMAGE_TO_GIANTS
 		];
 		
 		public static var myFilterInner:Array = [
+		XP_GAINED,
+		WIZLEVEL_TO_XP_AND_MANA,
+		WHITEOUT_XPBOOST_PCT,
 		DAMAGE_TO_SWARMLINGS,
 		DAMAGE_TO_REAVERS,
-		DAMAGE_TO_GIANTS,
-		XP_GAINED,
-		WHITEOUT_XPBOOST_PCT,
+		DAMAGE_TO_GIANTS
 		];
 		
 		public function TalismanFilter(inner:Array = null, edge:Array = null, corner:Array = null,start:int = 0, runeId:int = -1) 

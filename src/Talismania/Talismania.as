@@ -59,7 +59,8 @@ package Talismania
 		private var checkingTalismans:Boolean = false;
 		private var replaceMode:Boolean = false;
 		private var talismanRune:int = -1;
-		private var filterCost:int = 5;
+		private var filterCost:int = 50000;
+		private var randomCost:int = 1000;
 		
 		// Parameterless constructor for flash.display.Loader
 		public function Talismania()
@@ -167,21 +168,24 @@ package Talismania
 			{
 				if (GV.selectorCore.screenStatus == 205 || GV.selectorCore.screenStatus == 206) // if we're in the talisman menu
 				{
+					var filter:TalismanFilter;
 					if (pE.altKey)
 					{
-						var filter:TalismanFilter = new TalismanFilter(TalismanFilter.myFilterInner, TalismanFilter.myFilterEdge, TalismanFilter.myFilterCorner, Math.random() * 7999998, 3);
+						filter = new TalismanFilter(TalismanFilter.myFilterInner, TalismanFilter.myFilterEdge, TalismanFilter.myFilterCorner, Math.random() * 7999998, 3);
 						filterTalisman(filter);
 					}
 					else
 					{
-						
+						filter = new TalismanFilter([TalismanFilter.SKILLS_ALL], [TalismanFilter.SKILLS_ALL], [TalismanFilter.SKILLS_ALL], Math.random() * 7999998);
+						filterTalisman(filter, true);
 					}
 				}
 			}
 		}
 		
-		public function filterTalisman(filter:TalismanFilter): void
+		public function filterTalisman(filter:TalismanFilter, costOverride:Boolean = false): void
 		{
+			var cost:int = costOverride ? randomCost : filterCost;
 			if (GV.selectorCore.screenStatus != 205 && GV.selectorCore.screenStatus != 206) // if we're in the talisman menu
 			{
 				return;
@@ -196,19 +200,18 @@ package Talismania
 				showMessage("Fragment must be rarity 100!");
 				return;
 			}
-			if (GV.ppd.shadowCoreAmount.g() < filterCost)
+			if (GV.ppd.shadowCoreAmount.g() < cost)
 			{
-				var costBeginning:int = Math.round(filterCost / 1000);
+				var costBeginning:int = Math.round(cost / 1000);
 				showMessage("Not enough shadow cores, requires " + costBeginning + ",000!");
 				return;
 			}
-			
 			var time:int = getTimer();
 			var frag:Object = filter.getTalismanMatchingFilter(talFrag.clone());
 			if (frag != null)
 			{
 				var numSeeds:int = frag.seed - TalismanFilter.talismanSeedBase - filter.startSeed;
-				var elapsedTime:Number = (getTimer() - time) / 1000;
+				var elapsedTime:Number = (getTimer() - time + 1) / 1000;
 				logger.log("", "Number of seeds searched: " + numSeeds);
 				logger.log("", "Elapsed Time: " + elapsedTime);
 				logger.log("", "seeds/s: " + (numSeeds / elapsedTime));
@@ -218,7 +221,7 @@ package Talismania
 				GV.selectorCore.pnlTalisman.dirtyFlag = true;
 				GV.talFragBitmapCreator.giveTalFragBitmaps(talFrag);
 				
-				GV.ppd.shadowCoreAmount.s(GV.ppd.shadowCoreAmount.g() - filterCost);
+				GV.ppd.shadowCoreAmount.s(GV.ppd.shadowCoreAmount.g() - cost);
 				GV.selectorCore.renderer.updateShadowCoreCounter(GV.ppd.shadowCoreAmount.g());
 				
 				showMessage("Talismania Completed Successfully!");
