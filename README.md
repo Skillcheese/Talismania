@@ -1,5 +1,5 @@
 # Talismania
-a GCFW mod that adds purchasable mega-talisman fragments for a large sum of shadow cores
+a GCFW mod that adds purchasable near perfect talisman fragments for a large sum of shadow cores
 
 # Mod files
 all the files will be in the game's Local Store folder
