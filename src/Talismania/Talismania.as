@@ -210,11 +210,8 @@ package Talismania
 			var frag:Object = filter.getTalismanMatchingFilter(talFrag.clone());
 			if (frag != null)
 			{
-				var numSeeds:int = frag.seed - TalismanFilter.talismanSeedBase - filter.startSeed;
 				var elapsedTime:Number = (getTimer() - time + 1) / 1000;
-				logger.log("", "Number of seeds searched: " + numSeeds);
 				logger.log("", "Elapsed Time: " + elapsedTime);
-				logger.log("", "seeds/s: " + (numSeeds / elapsedTime));
 				talFrag.seed = frag.seed;
 				talFrag.calculateProperties();
 				talFrag.hasChangedShape = true;

@@ -11,7 +11,6 @@ package Talismania
 		public static var numTalismans:int = 8999998;
 		public static var talismanSeedBase:int = 1000000;
 		public static var maxTalismanSeed:int = 1000000 + 8999998;
-		public var startSeed:int = 0;
 		public var forceRune:int = -1;
 		private var idsInner:Array;
 		private var idsCorner:Array;
@@ -77,7 +76,7 @@ package Talismania
 		DAMAGE_TO_GIANTS
 		];
 		
-		public function TalismanFilter(inner:Array = null, edge:Array = null, corner:Array = null,start:int = 0, runeId:int = -1) 
+		public function TalismanFilter(inner:Array = null, edge:Array = null, corner:Array = null,runeId:int = -1) 
 		{
 			if (inner == null || edge == null || corner == null)
 			{
@@ -91,7 +90,6 @@ package Talismania
 				idsEdge = edge;
 				idsCorner = corner;
 			}
-			startSeed = start;
 			forceRune = runeId;
 		}
 		
@@ -101,11 +99,7 @@ package Talismania
 			{
 				return null;
 			}
-			if (startSeed > 0)
-			{
-				startSeed = talismanBase.seed + 1;
-			}
-			var start:int = talismanSeedBase + startSeed;
+			var start:int = talismanBase.seed + 1;
 			var end:int = maxTalismanSeed;
 			var passTest:Boolean = true;
 			var ids:Array;
