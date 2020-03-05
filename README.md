@@ -28,6 +28,30 @@ alt + k - filter a talisman fragment (costs 50,000 shadow cores)
 k - get a random new r100 talisman fragment (costs 1,000 shadow cores)
 ```
 
+# The filters
+    CORNER
+		XP_GAINED,
+		WHITEOUT_XPBOOST_PCT,
+		WHITEOUT_MANALEECHBOOST_PCT,
+		FREEZE_DURATION,
+		WHITEOUT_DURATION
+    
+    EDGE
+		XP_GAINED,
+		DAMAGE_TO_FLYING,
+		WIZLEVEL_TO_XP_AND_MANA,
+		DAMAGE_TO_SWARMLINGS,
+		DAMAGE_TO_REAVERS,
+		DAMAGE_TO_GIANTS
+    
+    INNER
+		XP_GAINED,
+		WIZLEVEL_TO_XP_AND_MANA,
+		WHITEOUT_XPBOOST_PCT,
+		DAMAGE_TO_SWARMLINGS,
+		DAMAGE_TO_REAVERS,
+		DAMAGE_TO_GIANTS
+
 # Bug reports and feedback
 Please submit an issue to [The issue tracker](https://github.com/Skillcheese/Talismania/issues) if you encounter a bug and there isn't already an open issue about it.
 
