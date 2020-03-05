@@ -55,7 +55,7 @@ package Talismania
 		WHITEOUT_XPBOOST_PCT,
 		WHITEOUT_MANALEECHBOOST_PCT,
 		FREEZE_DURATION,
-		WHITEOUT_DURATION
+		ICESHARDS_HPLOSS_PCT
 		];
 		
 		public static var myFilterEdge:Array = [
@@ -99,7 +99,7 @@ package Talismania
 			{
 				return null;
 			}
-			var start:int = talismanBase.seed + 1;
+			var start:int = 1000000 + ((talismanBase.seed - 1000000) * 187 + 903953) % 8999998;
 			var end:int = maxTalismanSeed;
 			var passTest:Boolean = true;
 			var ids:Array;

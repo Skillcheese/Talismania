@@ -12,7 +12,6 @@ package Talismania
 	import flash.events.*;
 	import flash.filters.GlowFilter;
 	import flash.net.*;
-	import Talismania.TalismanFilter;
 	import flash.geom.Point;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -20,6 +19,8 @@ package Talismania
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	import flash.utils.ByteArray;
+	import Talismania.TalismanFilter;
+	import Talismania.MegaTalisman;
 
 	// We extend MovieClip so that flash.display.Loader accepts our class
 	// The loader also requires a parameterless constructor (AFAIK), so we also have a .Bind method to bind our class to the game
@@ -44,6 +45,7 @@ package Talismania
 		
 		internal static var logger:Object;
 		internal static var storage:File;
+		private static var BASE64CHARS:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 		private var configuration:Object;
 		private var defaultHotkeys:Object;
@@ -61,6 +63,7 @@ package Talismania
 		private var talismanRune:int = -1;
 		private var filterCost:int = 50000;
 		private var randomCost:int = 1000;
+		
 		
 		// Parameterless constructor for flash.display.Loader
 		public function Talismania()
@@ -87,6 +90,7 @@ package Talismania
 			
 			logger.log("Talismania", "Talismania initialized!");
 			checkTalismanDrops();
+			loadMegaTalisman();
 			return this;
 		}
 
@@ -147,11 +151,6 @@ package Talismania
 		public function prettyVersion(): String
 		{
 			return 'v' + VERSION + ' for ' + GAME_VERSION;
-		}
-		
-		private function addEventListeners(): void
-		{
-			GV.main.stage.addEventListener(KeyboardEvent.KEY_DOWN, ehKeyboardInStageMenu, false, 0, true);
 		}
 		
 		private function ehKeyboardInStageMenu(pE:KeyboardEvent): void
@@ -268,9 +267,132 @@ package Talismania
 			logger = null;
 		}
 		
+		private function saveMegaTalisman(): void
+		{
+			var vFile:File = null;
+			var vFileStream:FileStream = null;
+			var saveStr:String = MegaTalisman.saveMegaTalisman();
+			try
+			{
+				vFileStream = new FileStream();
+				var path:String = "TalismaniaSlot" + (GV.loaderSaver.activeSlotId + 1) + ".dat";
+				vFile = File.applicationStorageDirectory.resolvePath(path);
+				vFileStream.open(vFile,FileMode.WRITE);
+				vFileStream.writeMultiByte(saveStr,"utf-8");
+				vFileStream.close();
+			}
+			catch (e:Error)
+			{
+				logger.log("", "Saving failed");
+			}
+		}
+		
+		private function loadMegaTalisman(): void
+		{
+			var vFile:File = null;
+			var vLoadedStr:String = null;
+			var vFileStream:FileStream = new FileStream();
+			try
+			{
+				var path:String = "TalismaniaSlot1.dat";
+				vFile = File.applicationStorageDirectory.resolvePath(path);
+				vFileStream.open(vFile,FileMode.READ);
+				vLoadedStr = vFileStream.readMultiByte(vFile.size,"utf-8");
+				vFileStream.close();
+			}
+			catch(e:Error)
+			{
+				logger.log("", "Loading failed");
+				return;
+			}
+			MegaTalisman.loadMegaTalisman(vLoadedStr);
+		}
+		
+		private function addEventListeners(): void
+		{
+			GV.main.stage.addEventListener(KeyboardEvent.KEY_DOWN, ehKeyboardInStageMenu, false, 0, true);
+		}
+		
 		private function removeEventListeners(): void
 		{
 			GV.main.stage.removeEventListener(KeyboardEvent.KEY_DOWN, ehKeyboardInStageMenu, false);
+		}
+		
+		public static function base64EncodeString(pData:String) : String
+		{
+			var vBa:ByteArray = new ByteArray();
+			vBa.writeUTFBytes(pData);
+			return base64EncodeByteArray(vBa);
+		}
+		
+		public static function base64EncodeByteArray(pData:ByteArray) : String
+		{
+			var i:int = 0;
+			var vDataBuffer:Array = null;
+			var vStr:String = "";
+			var vOutputBuffer:Array = new Array(4);
+			pData.position = 0;
+			while(pData.bytesAvailable > 0)
+			{
+				vDataBuffer = new Array();
+				i = 0;
+				while(i < 3 && pData.bytesAvailable > 0)
+				{
+				   vDataBuffer[i] = pData.readUnsignedByte();
+				   i++;
+				}
+				vOutputBuffer[0] = (vDataBuffer[0] & 252) >> 2;
+				vOutputBuffer[1] = (vDataBuffer[0] & 3) << 4 | vDataBuffer[1] >> 4;
+				vOutputBuffer[2] = (vDataBuffer[1] & 15) << 2 | vDataBuffer[2] >> 6;
+				vOutputBuffer[3] = vDataBuffer[2] & 63;
+				for(i = vDataBuffer.length; i < 3; i++)
+				{
+				   vOutputBuffer[i + 1] = 64;
+				}
+				for(i = 0; i < vOutputBuffer.length; i++)
+				{
+				   vStr = vStr + BASE64CHARS.charAt(vOutputBuffer[i]);
+				}
+			}
+			return vStr;
+		}
+		
+		public static function base64DecodeString(pData:String) : String
+        {
+			var vBa:ByteArray = base64DecodeByteArray(pData);
+			return vBa.readUTFBytes(vBa.length);
+        }
+		
+		public static function base64DecodeByteArray(pData:String) : ByteArray
+		{
+			var i:int = 0;
+			var j:int = 0;
+			var vBa:ByteArray = new ByteArray();
+			var vDataBuffer:Array = new Array(4);
+			var vOutputBuffer:Array = new Array(3);
+			var iLim:int = pData.length;
+			for(i = 0; i < iLim; i = i + 4)
+			{
+				j = 0;
+				while(j < 4 && i + j < iLim)
+				{
+				   vDataBuffer[j] = BASE64CHARS.indexOf(pData.charAt(i + j));
+				   j++;
+				}
+				vOutputBuffer[0] = (vDataBuffer[0] << 2) + ((vDataBuffer[1] & 48) >> 4);
+				vOutputBuffer[1] = ((vDataBuffer[1] & 15) << 4) + ((vDataBuffer[2] & 60) >> 2);
+				vOutputBuffer[2] = ((vDataBuffer[2] & 3) << 6) + vDataBuffer[3];
+				for(j = 0; j < vOutputBuffer.length; j++)
+				{
+				   if(vDataBuffer[j + 1] == 64)
+				   {
+					  break;
+				   }
+				   vBa.writeByte(vOutputBuffer[j]);
+				}
+			}
+			vBa.position = 0;
+			return vBa;
 		}
 	}
 }
