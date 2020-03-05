@@ -34,7 +34,7 @@ k - get a random new r100 talisman fragment (costs 1,000 shadow cores)
 		WHITEOUT_XPBOOST_PCT,
 		WHITEOUT_MANALEECHBOOST_PCT,
 		FREEZE_DURATION,
-		WHITEOUT_DURATION
+		ICESHARDS_HPLOSS_PCT
     
     EDGE
 		XP_GAINED,
