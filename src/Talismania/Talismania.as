@@ -90,7 +90,6 @@ package Talismania
 			
 			logger.log("Talismania", "Talismania initialized!");
 			checkTalismanDrops();
-			loadMegaTalisman();
 			return this;
 		}
 
@@ -287,14 +286,14 @@ package Talismania
 			}
 		}
 		
-		private function loadMegaTalisman(): void
+		private function loadMegaTalisman(activeSlotId:int): void
 		{
 			var vFile:File = null;
 			var vLoadedStr:String = null;
 			var vFileStream:FileStream = new FileStream();
 			try
 			{
-				var path:String = "TalismaniaSlot1.dat";
+				var path:String = "TalismaniaSlot" + (activeSlotId + 1) + ".dat";
 				vFile = File.applicationStorageDirectory.resolvePath(path);
 				vFileStream.open(vFile,FileMode.READ);
 				vLoadedStr = vFileStream.readMultiByte(vFile.size,"utf-8");
@@ -305,12 +304,36 @@ package Talismania
 				logger.log("", "Loading failed");
 				return;
 			}
+			logger.log("", "loaded slot: " + (activeSlotId + 1));
+			logger.log("", vLoadedStr);
 			MegaTalisman.loadMegaTalisman(vLoadedStr);
 		}
 		
 		private function addEventListeners(): void
 		{
 			GV.main.stage.addEventListener(KeyboardEvent.KEY_DOWN, ehKeyboardInStageMenu, false, 0, true);
+			GV.loaderSaver.activeSlotId = -1;
+			addEventListener("Game Start", gameStart, false, 0, true);
+			checkActiveSlotChanged();
+		}
+		
+		private function gameStart(event:Event): void
+		{
+			logger.log("", "Game loaded!");
+		}
+		
+		private function checkActiveSlotChanged(): void
+		{
+			if (GV.loaderSaver.activeSlotId != -1)
+			{
+				loadMegaTalisman(GV.loaderSaver.activeSlotId);
+				dispatchEvent(new Event("Game Start"));
+				return;
+			}
+			var timer:Timer = new Timer(100, 1);
+			var func:Function = function(e:Event): void {checkActiveSlotChanged(); };
+			timer.addEventListener(TimerEvent.TIMER, func);
+			timer.start();
 		}
 		
 		private function removeEventListeners(): void
