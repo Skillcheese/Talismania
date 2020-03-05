@@ -51,6 +51,7 @@ package Talismania
 		private var defaultHotkeys:Object;
 		private var infoPanelState:int;
 		private var activeBitmaps:Object;
+		private var megaTalismanMenu:MegaTalismanMenu;
 		
 		private var automaters:Array = new Array();
 		private var automatersEnabled:Boolean = false;
@@ -63,6 +64,7 @@ package Talismania
 		private var talismanRune:int = -1;
 		private var filterCost:int = 50000;
 		private var randomCost:int = 1000;
+		public var megaTalisman:MegaTalisman;
 		
 		
 		// Parameterless constructor for flash.display.Loader
@@ -156,7 +158,7 @@ package Talismania
 		{
 			if (pE.keyCode == 33) //page up
 			{
-				
+				saveMegaTalisman();
 			}
 			if (pE.keyCode == 34) // page down
 			{
@@ -270,7 +272,7 @@ package Talismania
 		{
 			var vFile:File = null;
 			var vFileStream:FileStream = null;
-			var saveStr:String = MegaTalisman.saveMegaTalisman();
+			var saveStr:String = base64EncodeString(this.megaTalisman.saveMegaTalisman());
 			try
 			{
 				vFileStream = new FileStream();
@@ -282,7 +284,7 @@ package Talismania
 			}
 			catch (e:Error)
 			{
-				logger.log("", "Saving failed");
+				logger.log("", "Saving Failed");
 			}
 		}
 		
@@ -291,6 +293,7 @@ package Talismania
 			var vFile:File = null;
 			var vLoadedStr:String = null;
 			var vFileStream:FileStream = new FileStream();
+			this.megaTalisman = new MegaTalisman();
 			try
 			{
 				var path:String = "TalismaniaSlot" + (activeSlotId + 1) + ".dat";
@@ -301,12 +304,14 @@ package Talismania
 			}
 			catch(e:Error)
 			{
-				logger.log("", "Loading failed");
+				logger.log("", "Loading Failed");
+				this.megaTalisman.loadMegaTalisman("Loading Failed");
 				return;
 			}
 			logger.log("", "loaded slot: " + (activeSlotId + 1));
+			vLoadedStr = base64DecodeString(vLoadedStr);
 			logger.log("", vLoadedStr);
-			MegaTalisman.loadMegaTalisman(vLoadedStr);
+			this.megaTalisman.loadMegaTalisman(vLoadedStr);
 		}
 		
 		private function addEventListeners(): void
@@ -320,6 +325,7 @@ package Talismania
 		private function gameStart(event:Event): void
 		{
 			logger.log("", "Game loaded!");
+			megaTalismanMenu = new MegaTalismanMenu();
 		}
 		
 		private function checkActiveSlotChanged(): void
@@ -328,7 +334,6 @@ package Talismania
 			{
 				loadMegaTalisman(GV.loaderSaver.activeSlotId);
 				dispatchEvent(new Event("Game Start"));
-				return;
 			}
 			var timer:Timer = new Timer(100, 1);
 			var func:Function = function(e:Event): void {checkActiveSlotChanged(); };

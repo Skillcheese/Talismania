@@ -122,7 +122,7 @@ package Talismania
 					var prn:PRandom = new PRandom();
 					prn.setSeed(i);
 					var rune:int = Math.floor(prn.getRnd() * 9.99);
-					if (forceRune != rune)
+					if (rune >= 5)
 					{
 						continue;
 					}
