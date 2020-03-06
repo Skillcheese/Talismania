@@ -64,6 +64,8 @@ package Talismania
 		private var talismanRune:int = -1;
 		private var filterCost:int = 50000;
 		private var randomCost:int = 1000;
+		private var gameStarted:Boolean = false;
+		private var activeSlotId:int = -1;
 		public var megaTalisman:MegaTalisman;
 		
 		
@@ -162,7 +164,7 @@ package Talismania
 			}
 			if (pE.keyCode == 34) // page down
 			{
-				
+				var test:Test = new Test();
 			}
 			if (pE.keyCode == 75) // k
 			{
@@ -314,24 +316,50 @@ package Talismania
 			this.megaTalisman.loadMegaTalisman(vLoadedStr);
 		}
 		
+		private function ehEnterFrame(pE:Event): void
+		{
+			/*
+			if (core.speedMultiplier > 0)
+			{
+				for each (var monster:Object in core.monstersOnScene)
+				{
+					if (monster != null)
+					{
+						monster.poisonDamagePerFrame *= 2 * core.speedMultiplier * 3;
+						monster.poisonTimeLeft += core.speedMultiplier * 0.33;
+					}
+				}
+			}
+			*/
+		}
+		
 		private function addEventListeners(): void
 		{
 			GV.main.stage.addEventListener(KeyboardEvent.KEY_DOWN, ehKeyboardInStageMenu, false, 0, true);
+			GV.main.mcOptions.btnMainMenu.addEventListener(MouseEvent.MOUSE_DOWN, ehMainMenu, false, 0, true);
+			GV.main.addEventListener(Event.ENTER_FRAME, this.ehEnterFrame);
 			GV.loaderSaver.activeSlotId = -1;
 			addEventListener("Game Start", gameStart, false, 0, true);
 			checkActiveSlotChanged();
 		}
 		
+		private function ehMainMenu(pE:MouseEvent): void
+		{
+			gameStarted = false;
+		}
+		
 		private function gameStart(event:Event): void
 		{
-			logger.log("", "Game loaded!");
+			gameStarted = true;
+			logger.log("", "Game started!");
 			megaTalismanMenu = new MegaTalismanMenu();
 		}
 		
 		private function checkActiveSlotChanged(): void
 		{
-			if (GV.loaderSaver.activeSlotId != -1)
+			if (GV.loaderSaver.activeSlotId != -1 && !gameStarted && GV.loaderSaver.activeSlotId != activeSlotId)
 			{
+				activeSlotId = GV.loaderSaver.activeSlotId;
 				loadMegaTalisman(GV.loaderSaver.activeSlotId);
 				dispatchEvent(new Event("Game Start"));
 			}
@@ -344,6 +372,7 @@ package Talismania
 		private function removeEventListeners(): void
 		{
 			GV.main.stage.removeEventListener(KeyboardEvent.KEY_DOWN, ehKeyboardInStageMenu, false);
+			GV.main.mcOptions.btnMainMenu.removeEventListener(MouseEvent.MOUSE_DOWN, ehMainMenu, false);
 		}
 		
 		public static function base64EncodeString(pData:String) : String

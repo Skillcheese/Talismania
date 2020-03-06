@@ -5,7 +5,9 @@ package Talismania
 	 * @author Skillcheese
 	 */
 	
-	 import Talismania.PRandom;
+	import Talismania.PRandom;
+	import flash.utils.getDefinitionByName;
+	 
 	public class TalismanFilter 
 	{
 		public static var numTalismans:int = 8999998;
